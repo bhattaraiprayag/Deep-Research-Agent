@@ -1,0 +1,60 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv
+.env
+*.egg-info
+.pytest_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# Node
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+!README.md
+uv-docs
+
+# Sample/reference files
+sample
+
+# Build artifacts
+dist
+build
+
+# Temporary files
+*.log
+*.tmp
+temp_graph.mmd
+
+# Test files
+tests
+*.test.*
+*.spec.*
+
+# Development configs
+docker-compose.override.yml
+.env.local
