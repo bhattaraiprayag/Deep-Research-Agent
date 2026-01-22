@@ -76,7 +76,7 @@ Deep-Research-Agent/
 | **Observability** | LangSmith |
 | **CI/CD** | GitHub Actions, Pre-commit |
 | **Code Quality** | Ruff, Mypy, Prettier, ESLint |
-| **Package Manager** | uv (Python), npm (Node.js) |
+| **Package Manager** | uv (Python), pnpm (Node.js) |
 | **Containerization** | Docker, Docker Compose |
 
 ## Quick Start
@@ -134,18 +134,18 @@ uv run pytest tests/ -v
 cd frontend
 
 # Install dependencies
-npm install
+pnpm install
 
 # Run development server
-npm run dev
+pnpm run dev
 
 # Build for production
 # Build for production
-npm run build
+pnpm run build
 
 # Run linting and formatting
-npm run lint
-npm run format
+pnpm run lint
+pnpm run format
 ```
 
 ## Quality Assurance

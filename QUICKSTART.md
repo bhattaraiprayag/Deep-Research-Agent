@@ -92,10 +92,10 @@ Open a new terminal:
 cd frontend
 
 # Install dependencies
-npm install
+pnpm install
 
 # Run development server (with API proxy)
-npm run dev
+pnpm run dev
 ```
 
 Access at: **http://localhost:5173**

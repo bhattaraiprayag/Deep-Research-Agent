@@ -7,6 +7,7 @@ Thank you for your interest in contributing! This guide helps you set up your en
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [uv](https://github.com/astral-sh/uv) (for Python 3.12+)
 - [Node.js](https://nodejs.org/) (v20+)
+- [pnpm](https://pnpm.io/) (v9+)
 
 ## Initial Setup
 
@@ -32,7 +33,7 @@ Thank you for your interest in contributing! This guide helps you set up your en
 4.  **Frontend Setup:**
     ```bash
     cd frontend
-    npm ci
+    pnpm install
     ```
 
 ## Development Workflow
@@ -59,15 +60,15 @@ Thank you for your interest in contributing! This guide helps you set up your en
 -   **Run locally:**
     ```bash
     cd frontend
-    npm run dev
+    pnpm run dev
     ```
 -   **Lint:**
     ```bash
-    npm run lint
+    pnpm run lint
     ```
 -   **Format:**
     ```bash
-    npm run format
+    pnpm run format
     ```
 
 ## Docker
