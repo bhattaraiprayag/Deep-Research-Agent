@@ -92,8 +92,3 @@ frontend/build/
 
 # Research outputs
 research_report_*.md
-
-# Documentation
-uv-docs/
-sample/
-GEMINI.md
