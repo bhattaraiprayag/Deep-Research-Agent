@@ -83,10 +83,12 @@ Address these issues in your revised report."""
         logger.info("[Analyst] Addressing critique feedback")
 
     llm = get_reasoning_llm()
-    response = llm.invoke([
-        SystemMessage(content=ANALYST_SYSTEM_PROMPT),
-        HumanMessage(content=user_content),
-    ])
+    response = llm.invoke(
+        [
+            SystemMessage(content=ANALYST_SYSTEM_PROMPT),
+            HumanMessage(content=user_content),
+        ]
+    )
 
     report = response.content if isinstance(response.content, str) else str(response.content)
     logger.info(f"[Analyst] Generated report ({len(report)} chars)")

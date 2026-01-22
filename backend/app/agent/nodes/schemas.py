@@ -21,9 +21,7 @@ class StrategistOutput(BaseModel):
 class CuratorOutput(BaseModel):
     """Structured output from the Curator node."""
 
-    facts: list[str] = Field(
-        description="List of atomic facts extracted from the text."
-    )
+    facts: list[str] = Field(description="List of atomic facts extracted from the text.")
     is_relevant: bool = Field(
         description="True if the content is relevant to the user's research task."
     )

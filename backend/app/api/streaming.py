@@ -4,7 +4,6 @@ SSE streaming utilities.
 Provides functions to stream research events to the frontend.
 """
 
-import json
 import logging
 from collections.abc import AsyncGenerator
 from typing import Any

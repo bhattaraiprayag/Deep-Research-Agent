@@ -68,12 +68,12 @@ def _deduplicate_facts(
     seen_hashes: set[str] = set()
 
     for existing in existing_facts:
-        h = hashlib.md5(existing["content"].encode()).hexdigest()
+        h = hashlib.sha256(existing["content"].encode()).hexdigest()
         seen_hashes.add(h)
 
     unique_facts: list[Fact] = []
     for fact in new_facts:
-        h = hashlib.md5(fact["content"].encode()).hexdigest()
+        h = hashlib.sha256(fact["content"].encode()).hexdigest()
         if h not in seen_hashes:
             unique_facts.append(fact)
             seen_hashes.add(h)
@@ -103,10 +103,7 @@ async def curator_node(state: ResearchState) -> dict[str, Any]:
     task = state["task"]
     logger.info(f"[Curator] Processing {len(raw_results)} raw sources")
 
-    extraction_tasks = [
-        _extract_facts_from_item(task, item)
-        for item in raw_results
-    ]
+    extraction_tasks = [_extract_facts_from_item(task, item) for item in raw_results]
     extraction_results = await asyncio.gather(*extraction_tasks)
 
     all_new_facts: list[Fact] = []

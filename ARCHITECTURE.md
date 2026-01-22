@@ -53,7 +53,7 @@ The Deep Research Agent is a full-stack application implementing a **Plan-and-Ex
 
 **Decision**: Use a graph-based Plan-and-Execute architecture with specialized nodes.
 
-**Rationale**: 
+**Rationale**:
 - Separates concerns: planning, execution, curation, synthesis, and review
 - Enables iterative refinement through loops
 - Each node can be independently tested and optimized
@@ -129,6 +129,16 @@ The Deep Research Agent is a full-stack application implementing a **Plan-and-Ex
 - Deterministic lockfile (uv.lock)
 - Excellent Docker integration with caching
 
+### 7. Code Quality & Security Gatekeepers
+
+**Decision**: Enforce strict quality standards using `pre-commit` hooks and GitHub Actions.
+
+**Rationale**:
+- **Security**: Prevent accidental commit of private keys (`detect-private-key`)
+- **Consistency**: Enforce formatting (`ruff`, `prettier`) before code review
+- **Reliability**: Catch type errors (`mypy`) and bugs (`ruff`) early
+- **Production Readiness**: "Shift left" on security and quality
+
 ---
 
 ## Component Details
@@ -179,7 +189,7 @@ class ResearchState(TypedDict):
 
 ### Scalability
 
-**Current Design**: Single-container deployment suitable for small teams.
+**Current Design**: Single-container deployment with **Gunicorn** managing concurrent workers.
 
 **For Scale**:
 1. **Horizontal Scaling**: Deploy multiple backend instances behind a load balancer (sticky sessions for SSE)
@@ -194,6 +204,8 @@ class ResearchState(TypedDict):
 - CORS configuration
 - Input validation with Pydantic
 - No secrets in code (environment variables)
+- **Hardened Nginx**: CSP, X-Frame-Options, X-Content-Type-Options headers
+- **Bandit Analysis**: Automated security linting for Python code
 
 **Production Additions**:
 - Rate limiting (per-user, per-IP)

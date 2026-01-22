@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from app.agent.nodes.curator import curator_node, _deduplicate_facts
+from app.agent.nodes.curator import _deduplicate_facts, curator_node
 
 
 class TestDeduplicateFacts:

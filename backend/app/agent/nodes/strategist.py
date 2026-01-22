@@ -97,10 +97,12 @@ Iteration: {iteration}/{settings.max_iterations}"""
     llm = get_reasoning_llm()
     structured_llm = llm.with_structured_output(StrategistOutput)
 
-    response = structured_llm.invoke([
-        SystemMessage(content=STRATEGIST_SYSTEM_PROMPT),
-        HumanMessage(content=user_message),
-    ])
+    response = structured_llm.invoke(
+        [
+            SystemMessage(content=STRATEGIST_SYSTEM_PROMPT),
+            HumanMessage(content=user_message),
+        ]
+    )
 
     if response.is_complete:
         logger.info("[Strategist] Sufficient information gathered. Moving to synthesis.")

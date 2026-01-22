@@ -70,6 +70,12 @@ uv venv
 # Install dependencies
 uv sync --dev
 
+# Install pre-commit hooks (Run from project root)
+cd ..
+uv tool install pre-commit
+pre-commit install
+cd backend
+
 # Create .env in backend folder
 cp ../.env.example .env
 # Edit .env with your API keys
@@ -150,7 +156,7 @@ If `search_mock_mode` is `true`, your Tavily API key is not configured correctly
 
 **Error**: Container reports unhealthy
 
-**Solution**: 
+**Solution**:
 1. Check logs: `docker compose logs backend`
 2. Verify API keys are correct
 3. Ensure no firewall is blocking port 8000

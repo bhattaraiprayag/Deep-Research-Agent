@@ -40,10 +40,7 @@ def _format_verification_context(state: ResearchState) -> str:
     if not gathered:
         return "No context provided."
 
-    return "\n".join([
-        f"- {f['content']} ({f['source']})"
-        for f in gathered
-    ])
+    return "\n".join([f"- {f['content']} ({f['source']})" for f in gathered])
 
 
 def critic_node(state: ResearchState) -> dict[str, Any]:
@@ -78,10 +75,12 @@ Report Draft to Review:
     llm = get_reasoning_llm()
     structured_llm = llm.with_structured_output(CritiqueOutput)
 
-    response = structured_llm.invoke([
-        SystemMessage(content=CRITIC_SYSTEM_PROMPT),
-        HumanMessage(content=user_message),
-    ])
+    response = structured_llm.invoke(
+        [
+            SystemMessage(content=CRITIC_SYSTEM_PROMPT),
+            HumanMessage(content=user_message),
+        ]
+    )
 
     result = {
         "critique_feedback": response.feedback,

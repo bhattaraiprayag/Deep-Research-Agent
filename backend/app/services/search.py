@@ -106,7 +106,7 @@ class SearchService:
         """
         tasks = [self.search(q, max_results_per_query) for q in queries]
         results = await asyncio.gather(*tasks)
-        return dict(zip(queries, results))
+        return dict(zip(queries, results, strict=True))
 
     def _mock_search(self, query: str) -> list[RawSearchResult]:
         """Generate mock search results for testing."""

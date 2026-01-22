@@ -4,9 +4,8 @@ State models for the Deep Research Agent.
 Defines the core data structures used throughout the LangGraph workflow.
 """
 
-from typing import Annotated, TypedDict
-
 import operator
+from typing import Annotated, TypedDict
 
 
 class StepLog(TypedDict):

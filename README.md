@@ -14,6 +14,7 @@ The Deep Research Agent addresses a fundamental challenge with traditional LLM i
 - **Quality Review**: Built-in critique loop for accuracy verification
 - **Cited Reports**: Structured Markdown reports with source citations
 - **Modern UI**: Split-pane interface with live updates
+- **Engineering Rigor**: Full CI/CD pipeline, strict type checking, and security hardening
 
 ## Architecture
 
@@ -69,10 +70,12 @@ Deep-Research-Agent/
 | Layer | Technology |
 |-------|------------|
 | **Frontend** | React 19, TypeScript, Vite, Tailwind CSS, Lucide Icons |
-| **Backend** | FastAPI, Python 3.12, Pydantic |
+| **Backend** | FastAPI, Python 3.12, Pydantic, Gunicorn |
 | **Agent Framework** | LangChain, LangGraph |
 | **Search** | Tavily API |
 | **Observability** | LangSmith |
+| **CI/CD** | GitHub Actions, Pre-commit |
+| **Code Quality** | Ruff, Mypy, Prettier, ESLint |
 | **Package Manager** | uv (Python), npm (Node.js) |
 | **Containerization** | Docker, Docker Compose |
 
@@ -137,8 +140,27 @@ npm install
 npm run dev
 
 # Build for production
+# Build for production
 npm run build
+
+# Run linting and formatting
+npm run lint
+npm run format
 ```
+
+## Quality Assurance
+
+This project enforces high engineering standards through:
+
+- **Pre-commit Hooks**: Automatically checks code before every commit.
+  - Trailing whitespace & end-of-file fixes
+  - `ruff` for Python linting and formatting
+  - `mypy` for static type checking
+  - `prettier` for frontend consistency
+  - `detect-private-key` for security
+- **CI/CD Pipeline**: GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push:
+  - Backend: Linting, Type Checking, Testing (with coverage), Docker Build
+  - Frontend: Linting, Type Checking, Formatting, Docker Build
 
 ## Configuration
 

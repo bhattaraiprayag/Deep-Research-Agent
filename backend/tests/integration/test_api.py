@@ -1,6 +1,6 @@
 """Integration tests for the FastAPI endpoints."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -74,6 +74,7 @@ class TestResearchEndpoint:
         client,
     ):
         """Should return SSE stream for valid research request."""
+
         async def mock_stream():
             yield {"strategist": {"plan": ["query1"]}}
             yield {"analyst": {"report_content": "Test report"}}

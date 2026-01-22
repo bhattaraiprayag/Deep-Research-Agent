@@ -5,6 +5,23 @@ All notable changes to the Deep Research Agent project are documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-01-22
+
+### Added
+- **CI/CD Pipeline**: GitHub Actions workflow for automated testing, linting, and Docker builds
+- **Pre-commit Hooks**: Enforces code quality (ruff, mypy, prettier) and security (private key detection) locally
+- **Production Server**: Replaced `uvicorn` with `gunicorn` (using `UvicornWorker`) for better concurrency
+- **Security Hardening**:
+  - Added `flake8-bandit` (S) to ruff config for security analysis
+  - Added `Content-Security-Policy` and other security headers to Nginx
+  - Switched to `hashlib.sha256` for fact deduplication
+- **Documentation**: Added `CONTRIBUTING.md` guide for developers
+
+### Changed
+- **Dependencies**: Updated `pyproject.toml` and `package.json` with strict linting/formatting tools
+- **Docker Optimization**: Reduced frontend build context size significantly using `.dockerignore`
+- **Type Safety**: Relaxed `mypy` strictness slightly to accommodate existing codebase while preventing new errors
+
 ## [0.1.0] - 2026-01-20
 
 ### Added

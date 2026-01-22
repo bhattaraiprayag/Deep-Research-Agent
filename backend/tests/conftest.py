@@ -5,8 +5,9 @@ Provides common fixtures for unit and integration tests.
 """
 
 import os
+from collections.abc import Callable
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -75,14 +76,14 @@ def sample_raw_results() -> list[dict[str, Any]]:
         {
             "title": "AI PM Trends 2025",
             "content": "Key skills for AI PMs include understanding model evaluation, "
-                       "data pipelines, and stakeholder communication.",
+            "data pipelines, and stakeholder communication.",
             "url": "https://example.com/ai-pm-trends",
             "score": 0.92,
         },
         {
             "title": "Future of Product Management",
             "content": "Product managers working with AI need to bridge the gap between "
-                       "technical teams and business stakeholders.",
+            "technical teams and business stakeholders.",
             "url": "https://example.com/future-pm",
             "score": 0.88,
         },
@@ -90,9 +91,10 @@ def sample_raw_results() -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def mock_llm_response():
+def mock_llm_response() -> Callable[[str | dict[str, Any]], MagicMock]:
     """Factory for mocking LLM responses."""
-    def _create_mock(content: str | dict[str, Any]):
+
+    def _create_mock(content: str | dict[str, Any]) -> MagicMock:
         mock = MagicMock()
         if isinstance(content, dict):
             for key, value in content.items():
@@ -100,4 +102,5 @@ def mock_llm_response():
         else:
             mock.content = content
         return mock
+
     return _create_mock

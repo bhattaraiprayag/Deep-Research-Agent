@@ -3,9 +3,7 @@
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-import pytest
-
-from app.agent.nodes.strategist import strategist_node, _compress_context
+from app.agent.nodes.strategist import _compress_context, strategist_node
 
 
 class TestCompressContext:
@@ -17,7 +15,7 @@ class TestCompressContext:
         result = _compress_context(state)
         assert result == "No facts gathered yet."
 
-    def test_truncates_long_facts(self, sample_facts: list[dict[str, Any]]):
+    def test_truncates_long_facts(self):
         """Should truncate fact content to 200 characters."""
         long_fact = {
             "content": "A" * 300,

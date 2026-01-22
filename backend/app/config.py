@@ -5,7 +5,6 @@ Centralizes all environment variables and application settings using pydantic-se
 """
 
 from functools import lru_cache
-from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -38,7 +37,7 @@ class Settings(BaseSettings):
     fast_model: str = "gpt-4o-mini"
 
     # Server Configuration
-    backend_host: str = "0.0.0.0"
+    backend_host: str = "0.0.0.0"  # noqa: S104
     backend_port: int = 8000
 
     # CORS Origins (comma-separated)
