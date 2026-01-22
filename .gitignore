@@ -74,9 +74,6 @@ Thumbs.db
 *.tmp
 temp_graph.mmd
 
-# uv
-uv.lock
-
 # Node.js (Frontend)
 node_modules/
 npm-debug.log*
