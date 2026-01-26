@@ -6,45 +6,40 @@ This document describes the technical design decisions, component interactions, 
 
 The Deep Research Agent is a full-stack application implementing a **Plan-and-Execute** pattern for autonomous research. The system streams its reasoning process to users via Server-Sent Events (SSE), providing unprecedented transparency into AI decision-making.
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                           User Browser                               │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                    React Frontend                            │   │
-│  │  ┌──────────────┐  ┌──────────────────┐  ┌──────────────┐  │   │
-│  │  │ ReasoningPane│  │   ReportPane     │  │   InputBar   │  │   │
-│  │  │  (SSE Stream)│  │   (Markdown)     │  │   (Query)    │  │   │
-│  │  └──────────────┘  └──────────────────┘  └──────────────┘  │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────┬───────────────────────────────────────┘
-                              │ SSE / HTTP
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                        FastAPI Backend                               │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │                    LangGraph Agent                            │  │
-│  │  ┌───────────┐  ┌────────┐  ┌─────────┐  ┌────────────────┐ │  │
-│  │  │Strategist │→│ Hunter │→│ Curator │→│ Loop/Continue  │ │  │
-│  │  │ (Planning)│  │(Search)│  │(Extract)│  └───────┬────────┘ │  │
-│  │  └───────────┘  └────────┘  └─────────┘          │          │  │
-│  │       ▲                                          │          │  │
-│  │       └──────────────────────────────────────────┘          │  │
-│  │                         │                                    │  │
-│  │                         ▼                                    │  │
-│  │  ┌───────────┐  ┌─────────┐                                 │  │
-│  │  │  Analyst  │→│  Critic │→ END                             │  │
-│  │  │  (Write)  │←│(Review) │                                  │  │
-│  │  └───────────┘  └─────────┘                                 │  │
-│  └──────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       External Services                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐  │
-│  │  OpenAI API  │  │  Tavily API  │  │  LangSmith (Observability)│  │
-│  └──────────────┘  └──────────────┘  └──────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph Browser ["User Browser"]
+        subgraph ReactFrontend ["React Frontend"]
+            direction TB
+            ReasoningPane["ReasoningPane<br>(SSE Stream)"]
+            ReportPane["ReportPane<br>(Markdown)"]
+            InputBar["InputBar<br>(Query)"]
+        end
+    end
+
+    Browser -- "SSE / HTTP" --> Backend
+
+    subgraph Backend ["FastAPI Backend"]
+        subgraph LangGraphAgent ["LangGraph Agent"]
+            direction LR
+            Strategist["Strategist<br>(Planning)"] --> Hunter["Hunter<br>(Search)"]
+            Hunter --> Curator["Curator<br>(Extract)"]
+            Curator --> Loop{Loop/Continue}
+            Loop -->|Continue| Strategist
+            Loop -->|Finish| Analyst["Analyst<br>(Write)"]
+            Analyst --> Critic["Critic<br>(Review)"]
+            Critic -->|Approved| End((END))
+            Critic -->|Reject| Analyst
+        end
+    end
+
+    Backend --> Services
+
+    subgraph Services ["External Services"]
+        OpenAI["OpenAI API"]
+        Tavily["Tavily API"]
+        LangSmith["LangSmith<br>(Observability)"]
+    end
 ```
 
 ## Design Decisions
@@ -237,24 +232,25 @@ class ResearchState(TypedDict):
 ### High Availability
 
 **Deployment Pattern**:
-```
-                    ┌──────────────┐
-                    │   CDN / LB   │
-                    └──────┬───────┘
-                           │
-           ┌───────────────┼───────────────┐
-           ▼               ▼               ▼
-    ┌────────────┐  ┌────────────┐  ┌────────────┐
-    │  Backend   │  │  Backend   │  │  Backend   │
-    │  (Pod 1)   │  │  (Pod 2)   │  │  (Pod N)   │
-    └────────────┘  └────────────┘  └────────────┘
-           │               │               │
-           └───────────────┼───────────────┘
-                           ▼
-                    ┌────────────┐
-                    │   Redis    │
-                    │  (Cache)   │
-                    └────────────┘
+```mermaid
+graph TD
+    CDN["CDN / LB"]
+
+    subgraph BackendCluster ["Backend Cluster"]
+        Pod1["Backend<br>(Pod 1)"]
+        Pod2["Backend<br>(Pod 2)"]
+        PodN["Backend<br>(Pod N)"]
+    end
+
+    Redis["Redis<br>(Cache)"]
+
+    CDN --> Pod1
+    CDN --> Pod2
+    CDN --> PodN
+
+    Pod1 --> Redis
+    Pod2 --> Redis
+    PodN --> Redis
 ```
 
 ---

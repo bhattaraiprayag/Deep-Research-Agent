@@ -20,19 +20,16 @@ The Deep Research Agent addresses a fundamental challenge with traditional LLM i
 
 The system follows a Plan-and-Execute architecture with five specialized nodes:
 
-```
-┌──────────────┐     ┌────────┐     ┌─────────┐
-│  Strategist  │────▶│ Hunter │────▶│ Curator │
-│  (Planner)   │     │(Search)│     │(Extract)│
-└──────┬───────┘     └────────┘     └────┬────┘
-       │                                 │
-       │◀────────────────────────────────┘
-       │
-       ▼
-┌──────────────┐     ┌─────────┐
-│   Analyst    │────▶│  Critic │────▶ END
-│   (Write)    │◀────│(Review) │
-└──────────────┘     └─────────┘
+```mermaid
+graph TD
+    Strategist["Strategist<br>(Planner)"] --> Hunter["Hunter<br>(Search)"]
+    Hunter --> Curator["Curator<br>(Extract)"]
+    Curator --> Strategist
+
+    Strategist --> Analyst["Analyst<br>(Write)"]
+    Analyst --> Critic["Critic<br>(Review)"]
+    Critic -->|Approved| END((END))
+    Critic -->|Reject| Analyst
 ```
 
 ## Project Structure
