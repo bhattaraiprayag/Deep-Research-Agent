@@ -209,8 +209,10 @@ app_info = Info(
 
 def set_app_info(version: str, reasoning_model: str, fast_model: str) -> None:
     """Set application info metrics."""
-    app_info.info({
-        "version": version,
-        "reasoning_model": reasoning_model,
-        "fast_model": fast_model,
-    })
+    app_info.info(
+        {
+            "version": version,
+            "reasoning_model": reasoning_model,
+            "fast_model": fast_model,
+        }
+    )
