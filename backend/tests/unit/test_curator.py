@@ -63,7 +63,7 @@ class TestCuratorNode:
         assert result["temp_raw_results"] == []
 
     @pytest.mark.asyncio
-    @patch("app.agent.nodes.curator.get_fast_llm")
+    @patch("app.agent.nodes.curator.get_fast_llm_with_metrics")
     async def test_extracts_facts_from_raw_results(
         self,
         mock_llm: MagicMock,
@@ -90,7 +90,7 @@ class TestCuratorNode:
         assert result["temp_raw_results"] == []
 
     @pytest.mark.asyncio
-    @patch("app.agent.nodes.curator.get_fast_llm")
+    @patch("app.agent.nodes.curator.get_fast_llm_with_metrics")
     async def test_filters_irrelevant_results(
         self,
         mock_llm: MagicMock,

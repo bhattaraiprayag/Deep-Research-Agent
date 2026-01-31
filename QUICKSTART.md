@@ -52,6 +52,24 @@ Open your browser to: **http://localhost:3000**
 
 Enter a research query (minimum 10 characters) and press Enter or click the send button.
 
+### Step 4: Monitoring
+
+Access Grafana dashboards: **http://localhost:3001**
+- **Default Login**: `admin` / `admin`
+- **Pre-configured Dashboards**: 10 production-grade dashboards are auto-loaded:
+  - 🎯 Agent Execution Overview (Command Center)
+  - 🧠 LLM Token & Cost Economics
+  - 🔄 Loop Dynamics & Iteration Analytics
+  - 📊 Node-Level Performance Breakdown
+  - 🔍 Tavily Search Performance
+  - ✅ Quality Assurance Pipeline
+  - 📡 SSE Stream Health
+  - 🏗️ Infrastructure & Resource Utilization
+  - 🕐 End-to-End Research Timing
+  - 📈 Business Intelligence & Usage Analytics
+
+Access Prometheus UI: **http://localhost:9090**
+
 ---
 
 ## Option 2: Local Development

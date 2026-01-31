@@ -41,7 +41,7 @@ class TestStrategistNode:
     """Tests for the Strategist node function."""
 
     @patch("app.agent.nodes.strategist.get_settings")
-    @patch("app.agent.nodes.strategist.get_reasoning_llm")
+    @patch("app.agent.nodes.strategist.get_reasoning_llm_with_metrics")
     def test_returns_empty_plan_at_max_iterations(
         self,
         mock_llm: MagicMock,
@@ -64,7 +64,7 @@ class TestStrategistNode:
         mock_llm.assert_not_called()
 
     @patch("app.agent.nodes.strategist.get_settings")
-    @patch("app.agent.nodes.strategist.get_reasoning_llm")
+    @patch("app.agent.nodes.strategist.get_reasoning_llm_with_metrics")
     def test_generates_queries_when_incomplete(
         self,
         mock_llm: MagicMock,
@@ -94,7 +94,7 @@ class TestStrategistNode:
         assert result["iteration_count"] == 0
 
     @patch("app.agent.nodes.strategist.get_settings")
-    @patch("app.agent.nodes.strategist.get_reasoning_llm")
+    @patch("app.agent.nodes.strategist.get_reasoning_llm_with_metrics")
     def test_returns_empty_plan_when_complete(
         self,
         mock_llm: MagicMock,

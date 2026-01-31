@@ -10,7 +10,7 @@ from typing import Any
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.models.state import ResearchState
-from app.services.llm import get_reasoning_llm
+from app.services.llm import get_reasoning_llm_with_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ CRITICAL FEEDBACK FROM PREVIOUS DRAFT:
 Address these issues in your revised report."""
         logger.info("[Analyst] Addressing critique feedback")
 
-    llm = get_reasoning_llm()
+    llm = get_reasoning_llm_with_metrics(node="analyst")
     response = llm.invoke(
         [
             SystemMessage(content=ANALYST_SYSTEM_PROMPT),

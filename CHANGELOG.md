@@ -5,7 +5,46 @@ All notable changes to the Deep Research Agent project are documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-01-31
+
+### Added
+- **Production-Grade Monitoring Infrastructure**: Complete overhaul of Prometheus + Grafana setup
+- **Grafana Auto-Provisioning**: Dashboards and datasources are automatically configured on startup
+- **10 Pre-Configured Dashboards**:
+  - 🎯 Agent Execution Overview (P0) - Command center for real-time health
+  - 🧠 LLM Token & Cost Economics (P0) - Token tracking and cost estimation
+  - 🔄 Loop Dynamics & Iteration Analytics (P1) - Research loop analysis
+  - 📊 Node-Level Performance Breakdown (P1) - Per-node latency and errors
+  - 🔍 Tavily Search Performance (P2) - Search API monitoring
+  - ✅ Quality Assurance Pipeline (P2) - Critic node outcomes
+  - 📡 SSE Stream Health (P2) - Real-time streaming health
+  - 🏗️ Infrastructure & Resource Utilization (P3) - Container-level metrics
+  - 🕐 End-to-End Research Timing (P3) - Phase breakdown and SLA
+  - 📈 Business Intelligence & Usage Analytics (P3) - Usage analytics and growth
+- **Custom Prometheus Metrics** (`app/metrics.py`):
+  - LLM metrics: `llm_tokens_total`, `llm_calls_total`, `llm_call_duration_seconds`
+  - Node metrics: `node_executions_total`, `node_execution_duration_seconds`
+  - Research metrics: `research_tasks_total`, `research_duration_seconds`, `research_iterations_total`
+  - Critique metrics: `critique_decisions_total`, `critique_loops_total`
+  - Search metrics: `search_requests_total`, `search_latency_seconds`, `search_results_total`
+  - SSE metrics: `sse_streams_started_total`, `sse_events_total`, `active_sse_connections`
+  - Report quality: `report_facts_count`, `report_sources_count`, `report_length_chars`
+
+### Changed
+- **Directory Structure**: Moved `/prometheus` folder to `/monitoring/prometheus`
+- **Docker Compose**: Updated Grafana service with provisioning volumes and environment variables
+- **Documentation**: Updated ARCHITECTURE.md and QUICKSTART.md with new monitoring structure
+- **LLM Service**: Added `get_reasoning_llm_with_metrics()` and `get_fast_llm_with_metrics()` for per-node tracking
+- **Search Service**: Integrated metrics for request rate, latency, and result counts
+- **Streaming Module**: Added SSE connection and event tracking
+- **All Agent Nodes**: Updated to use metrics-enabled LLM functions
+- **App Version**: Bumped to 0.2.0
+
+### Removed
+- **Old Prometheus Folder**: Deleted `/prometheus` folder (now in `/monitoring/prometheus`)
+
 ## [0.1.1] - 2026-01-22
+
 
 ### Added
 - **CI/CD Pipeline**: GitHub Actions workflow for automated testing, linting, and Docker builds

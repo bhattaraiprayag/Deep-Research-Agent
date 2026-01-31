@@ -33,13 +33,20 @@ graph TD
         end
     end
 
-    Backend --> Services
-
     subgraph Services ["External Services"]
         OpenAI["OpenAI API"]
         Tavily["Tavily API"]
         LangSmith["LangSmith<br>(Observability)"]
     end
+
+    subgraph Monitoring ["Monitoring"]
+        Prometheus["Prometheus<br>(Metrics)"]
+        Grafana["Grafana<br>(Dashboards)"]
+    end
+
+    Backend --> Services
+    Backend --> Prometheus
+    Prometheus --> Grafana
 ```
 
 ## Design Decisions
@@ -211,14 +218,45 @@ class ResearchState(TypedDict):
 
 ### Observability
 
-**Current**: LangSmith integration for LLM tracing.
+**Current Implementation**:
+- **LangSmith**: Integration for LLM call tracing (optional)
+- **Prometheus**: Metrics scraping from `/metrics` endpoint via `prometheus-fastapi-instrumentator`
+- **Grafana**: Production-grade dashboards with auto-provisioning
 
-**Production Additions**:
-- Structured logging with correlation IDs
-- Prometheus metrics export
+**Grafana Dashboards** (10 pre-configured):
+
+| Priority | Dashboard | Purpose |
+|----------|-----------|---------|
+| 🔴 P0 | Agent Execution Overview | Command center for real-time health |
+| 🔴 P0 | LLM Token & Cost Economics | Token tracking and cost estimation |
+| 🟠 P1 | Loop Dynamics & Iterations | Research loop analysis |
+| 🟠 P1 | Node-Level Performance | Per-node latency and errors |
+| 🟡 P2 | Tavily Search Performance | Search API monitoring |
+| 🟡 P2 | Quality Assurance Pipeline | Critic node outcomes |
+| 🟡 P2 | SSE Stream Health | Real-time streaming health |
+| 🟢 P3 | Infrastructure & Resources | Container-level metrics |
+| 🟢 P3 | End-to-End Research Timing | Phase breakdown and SLA |
+| 🟢 P3 | Business Intelligence | Usage analytics and growth |
+
+**Monitoring Structure**:
+```
+monitoring/
+├── prometheus/
+│   └── prometheus.yml          # Prometheus scrape config
+└── grafana/
+    ├── datasources/
+    │   └── datasource.yml      # Auto-configures Prometheus
+    ├── provisioning/
+    │   └── dashboards/
+    │       └── dashboard.yml   # Dashboard provisioning
+    └── dashboards/
+        └── *.json              # 10 pre-configured dashboards
+```
+
+**Production Additions** (Future):
 - Distributed tracing (OpenTelemetry)
 - Error tracking (Sentry)
-- Health check endpoints with detailed status
+- Alerting rules with PagerDuty/Slack integration
 
 ### Cost Management
 

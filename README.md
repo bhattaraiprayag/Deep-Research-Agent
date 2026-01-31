@@ -57,10 +57,17 @@ Deep-Research-Agent/
 │   │   └── types/            # TypeScript definitions
 │   ├── Dockerfile
 │   └── nginx.conf
+├── monitoring/                # Observability infrastructure
+│   ├── prometheus/           # Prometheus configuration
+│   └── grafana/              # Grafana dashboards & provisioning
+│       ├── dashboards/       # 10 pre-configured dashboards
+│       ├── datasources/      # Auto-configured data sources
+│       └── provisioning/     # Dashboard provisioning config
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
 ```
+
 
 ## Technology Stack
 
@@ -70,7 +77,7 @@ Deep-Research-Agent/
 | **Backend** | FastAPI, Python 3.12, Pydantic, Gunicorn |
 | **Agent Framework** | LangChain, LangGraph |
 | **Search** | Tavily API |
-| **Observability** | LangSmith |
+| **Observability** | LangSmith, Prometheus, Grafana |
 | **CI/CD** | GitHub Actions, Pre-commit |
 | **Code Quality** | Ruff, Mypy, Prettier, ESLint |
 | **Package Manager** | uv (Python), pnpm (Node.js) |
@@ -102,6 +109,8 @@ docker compose up --build
 ```
 
 Access the application at `http://localhost:3000`
+Access Prometheus at `http://localhost:9090`
+Access Grafana at `http://localhost:3001`
 
 ## Development
 

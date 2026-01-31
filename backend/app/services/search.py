@@ -2,23 +2,31 @@
 Tavily search service wrapper.
 
 Provides an abstraction layer over the Tavily API with
-quality filtering and mock mode for testing.
+quality filtering, mock mode for testing, and Prometheus metrics.
 """
 
 import asyncio
 import logging
+import time
 from functools import lru_cache
 
 from tavily import TavilyClient
 
 from app.config import get_settings
+from app.metrics import (
+    search_latency_seconds,
+    search_mock_mode_active,
+    search_requests_total,
+    search_results_filtered_total,
+    search_results_total,
+)
 from app.models.state import RawSearchResult
 
 logger = logging.getLogger(__name__)
 
 
 class SearchService:
-    """Wrapper service for Tavily search API."""
+    """Wrapper service for Tavily search API with metrics."""
 
     MIN_RELEVANCE_SCORE = 0.6
 
@@ -42,6 +50,9 @@ class SearchService:
             logger.info("No Tavily API key provided. Mock mode enabled.")
             self._mock_mode = True
 
+        # Set mock mode metric
+        search_mock_mode_active.set(1 if self.is_mock_mode else 0)
+
     @property
     def is_mock_mode(self) -> bool:
         """Check if running in mock mode."""
@@ -58,8 +69,14 @@ class SearchService:
         Returns:
             List of raw search results passing the quality gate.
         """
+        start_time = time.perf_counter()
+
         if self.is_mock_mode:
-            return self._mock_search(query)
+            results = self._mock_search(query)
+            search_requests_total.labels(status="success").inc()
+            search_results_total.inc(len(results))
+            search_latency_seconds.observe(time.perf_counter() - start_time)
+            return results
 
         try:
             response = await asyncio.to_thread(
@@ -70,11 +87,14 @@ class SearchService:
                 include_raw_content=False,
             )
 
-            results: list[RawSearchResult] = []
+            filtered_results: list[RawSearchResult] = []
+            total_results = len(response.get("results", []))
+            filtered_count = 0
+
             for item in response.get("results", []):
                 score = item.get("score", 0)
                 if score >= self.MIN_RELEVANCE_SCORE:
-                    results.append(
+                    filtered_results.append(
                         RawSearchResult(
                             title=item.get("title", ""),
                             content=item.get("content", ""),
@@ -82,11 +102,21 @@ class SearchService:
                             score=score,
                         )
                     )
+                else:
+                    filtered_count += 1
 
-            return results
+            # Record metrics
+            search_requests_total.labels(status="success").inc()
+            search_results_total.inc(total_results)
+            search_results_filtered_total.inc(filtered_count)
+            search_latency_seconds.observe(time.perf_counter() - start_time)
+
+            return filtered_results
 
         except Exception as e:
             logger.error(f"Search error for query '{query}': {e}")
+            search_requests_total.labels(status="failure").inc()
+            search_latency_seconds.observe(time.perf_counter() - start_time)
             return []
 
     async def search_batch(

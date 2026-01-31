@@ -13,8 +13,9 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.agent.nodes.schemas import StrategistOutput
 from app.config import get_settings
+from app.metrics import max_iterations_reached_total, research_iterations_total
 from app.models.state import ResearchState
-from app.services.llm import get_reasoning_llm
+from app.services.llm import get_reasoning_llm_with_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -77,8 +78,12 @@ def strategist_node(state: ResearchState) -> dict[str, Any]:
 
     logger.info(f"[Strategist] Iteration {iteration}/{settings.max_iterations}")
 
+    # Track iterations
+    research_iterations_total.inc()
+
     if iteration >= settings.max_iterations:
         logger.info("[Strategist] Max iterations reached. Moving to synthesis.")
+        max_iterations_reached_total.inc()
         return {"plan": [], "iteration_count": iteration}
 
     context_summary = _compress_context(state)
@@ -94,7 +99,7 @@ Past Steps Log:
 
 Iteration: {iteration}/{settings.max_iterations}"""
 
-    llm = get_reasoning_llm()
+    llm = get_reasoning_llm_with_metrics(node="strategist")
     structured_llm = llm.with_structured_output(StrategistOutput)
 
     response = structured_llm.invoke(

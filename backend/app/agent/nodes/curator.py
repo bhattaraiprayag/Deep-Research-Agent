@@ -13,8 +13,9 @@ from typing import Any
 from langchain_core.messages import SystemMessage
 
 from app.agent.nodes.schemas import CuratorOutput
+from app.metrics import curator_facts_deduplicated_total, curator_facts_extracted_total
 from app.models.state import Fact, RawSearchResult, ResearchState
-from app.services.llm import get_fast_llm
+from app.services.llm import get_fast_llm_with_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -41,12 +42,12 @@ async def _extract_facts_from_item(
     prompt = _create_extraction_prompt(task, item["content"])
 
     try:
-        llm = get_fast_llm()
+        llm = get_fast_llm_with_metrics(node="curator")
         structured_llm = llm.with_structured_output(CuratorOutput)
         response = await structured_llm.ainvoke([SystemMessage(content=prompt)])
 
         if response.is_relevant and response.facts:
-            return [
+            facts = [
                 Fact(
                     content=fact,
                     source=item["url"],
@@ -54,6 +55,8 @@ async def _extract_facts_from_item(
                 )
                 for fact in response.facts
             ]
+            curator_facts_extracted_total.inc(len(facts))
+            return facts
     except Exception as e:
         logger.warning(f"[Curator] Extraction error: {e}")
 
@@ -72,11 +75,19 @@ def _deduplicate_facts(
         seen_hashes.add(h)
 
     unique_facts: list[Fact] = []
+    deduplicated_count = 0
+
     for fact in new_facts:
         h = hashlib.sha256(fact["content"].encode()).hexdigest()
         if h not in seen_hashes:
             unique_facts.append(fact)
             seen_hashes.add(h)
+        else:
+            deduplicated_count += 1
+
+    # Track deduplicated facts
+    if deduplicated_count > 0:
+        curator_facts_deduplicated_total.inc(deduplicated_count)
 
     return unique_facts
 

@@ -11,7 +11,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.agent.nodes.schemas import CritiqueOutput
 from app.models.state import ResearchState
-from app.services.llm import get_reasoning_llm
+from app.services.llm import get_reasoning_llm_with_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +72,7 @@ Available Context/Evidence:
 Report Draft to Review:
 {report}"""
 
-    llm = get_reasoning_llm()
+    llm = get_reasoning_llm_with_metrics(node="critic")
     structured_llm = llm.with_structured_output(CritiqueOutput)
 
     response = structured_llm.invoke(
